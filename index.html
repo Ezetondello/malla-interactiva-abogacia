@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Malla interactiva</title>
+  <style>
+   body{
+    font-family: system-ui, Segoe UI, Roboto, Arial;
+    margin: 24px;
+    background: #fff7fb;
+    color: #4a3a45;
+  }
+
+  header{
+    display:flex;
+    gap:12px;
+    align-items:center;
+    flex-wrap:wrap;
+  }
+
+  h2{
+    color:#b76e8a;
+  }
+
+  select,button{
+    padding:10px 12px;
+    border:1px solid #e7c8d6;
+    border-radius:12px;
+    background:#ffffff;
+    color:#b76e8a;
+    font-weight:500;
+  }
+
+  select:focus, button:hover{
+    border-color:#d48aa6;
+    background:#ffeaf3;
+  }
+
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+    gap:16px;
+    margin-top:20px;
+  }
+
+  .card{
+    border:1px solid #f0d6e0;
+    border-radius:18px;
+    padding:16px;
+    background:#ffffff;
+    box-shadow:0 4px 14px rgba(214,138,166,.15);
+    cursor:pointer;
+    transition:all .2s ease;
+  }
+
+  .card:hover{
+    transform:translateY(-3px);
+    box-shadow:0 6px 18px rgba(214,138,166,.25);
+  }
+
+  .title{
+    font-weight:600;
+    margin-bottom:6px;
+    color:#a45774;
+  }
+
+  .meta{
+    font-size:13px;
+    opacity:.85;
+    margin-bottom:10px;
+  }
+
+  .pill{
+    display:inline-block;
+    padding:5px 12px;
+    border-radius:999px;
+    font-size:12px;
+    border:1px solid #f0d6e0;
+  }
+
+  .pending{
+    background:#fff0f6;
+  }
+
+  .doing{
+    background:#ffe3ec;
+  }
+
+  .done{
+    background:#e8f9f1;
+  }
+
+  .locked{
+    opacity:.5;
+    cursor:not-allowed;
+  }
+
+  .req{
+    font-size:12px;
+    opacity:.8;
+  }
+  </style>
+</head>
+<body>
+  <header>
+    <h2 id="career"></h2>
+    <label>
+      Año:
+      <select id="yearFilter">
+        <option value="all">Todos</option>
+      </select>
+    </label>
+    <button id="reset">Reset progreso</button>
+  </header>
+
+  <div class="grid" id="grid"></div>
+
+<script>
+const STATUS = ["pending","doing","done"];
+const labels = {pending:"Pendiente", doing:"En curso", done:"Aprobada"};
+
+const storeKey = "malla_status_v1";
+let data, statusMap = JSON.parse(localStorage.getItem(storeKey) || "{}");
+
+function canUnlock(subj){
+  return (subj.req || []).every(r => statusMap[r] === "done");
+}
+function nextStatus(current){
+  const i = STATUS.indexOf(current || "pending");
+  return STATUS[(i + 1) % STATUS.length];
+}
+function save(){ localStorage.setItem(storeKey, JSON.stringify(statusMap)); }
+
+function buildYearFilter(subjects){
+  const years = [...new Set(subjects.map(s => s.year))].sort((a,b)=>a-b);
+  const sel = document.getElementById("yearFilter");
+  years.forEach(y=>{
+    const o = document.createElement("option");
+    o.value = String(y);
+    o.textContent = `Año ${y}`;
+    sel.appendChild(o);
+  });
+  sel.addEventListener("change", render);
+}
+
+function render(){
+  const grid = document.getElementById("grid");
+  grid.innerHTML = "";
+  const filter = document.getElementById("yearFilter").value;
+
+  data.subjects
+    .filter(s => filter==="all" ? true : String(s.year)===filter)
+    .sort((a,b)=> a.year-b.year || a.id.localeCompare(b.id))
+    .forEach(subj=>{
+      const st = statusMap[subj.id] || "pending";
+      const unlocked = canUnlock(subj);
+
+      const card = document.createElement("div");
+      card.className = `card ${st} ${unlocked? "" : "locked"}`;
+
+      card.innerHTML = `
+        <div class="title">${subj.name}</div>
+        <div class="meta">${subj.id} · Año ${subj.year} · 
+          <span class="pill ${st}">${labels[st]}</span>
+        </div>
+        <div class="req">Correlativas: ${subj.req?.length ? subj.req.join(", ") : "Ninguna"}</div>
+        <div class="req" style="margin-top:8px;">Tip: clic para cambiar estado</div>
+      `;
+
+      card.addEventListener("click", ()=>{
+        if(!unlocked && st!=="done"){
+          alert("Bloqueada: primero completá correlativas.");
+          return;
+        }
+        statusMap[subj.id] = nextStatus(st);
+        save();
+        render();
+      });
+
+      grid.appendChild(card);
+    });
+}
+
+async function init(){
+  data = await fetch("./data.json").then(r=>r.json());
+  document.getElementById("career").textContent = data.career || "Malla";
+  buildYearFilter(data.subjects);
+
+  document.getElementById("reset").addEventListener("click", ()=>{
+    if(confirm("¿Resetear progreso?")){
+      statusMap = {};
+      save();
+      render();
+    }
+  });
+
+  render();
+}
+init();
+</script>
+</body>
+</html>
