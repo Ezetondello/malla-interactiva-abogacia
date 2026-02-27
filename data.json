@@ -1,0 +1,9 @@
+{
+  "career": "Mi Carrera",
+  "subjects": [
+    { "id": "MAT1", "name": "Matemática I", "year": 1, "req": [] },
+    { "id": "FIS1", "name": "Física I", "year": 1, "req": ["MAT1"] },
+    { "id": "PROG1", "name": "Programación I", "year": 1, "req": [] },
+    { "id": "PROG2", "name": "Programación II", "year": 2, "req": ["PROG1"] }
+  ]
+}
