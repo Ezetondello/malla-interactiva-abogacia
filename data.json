@@ -1,9 +1,76 @@
-{
-  "career": "Mi Carrera",
+
+ {
+  "career": "Abogacía (Malla interactiva)",
   "subjects": [
-    { "id": "MAT1", "name": "Matemática I", "year": 1, "req": [] },
-    { "id": "FIS1", "name": "Física I", "year": 1, "req": ["MAT1"] },
-    { "id": "PROG1", "name": "Programación I", "year": 1, "req": [] },
-    { "id": "PROG2", "name": "Programación II", "year": 2, "req": ["PROG1"] }
+    { "id": "A1S1-01", "name": "Introducción al Derecho", "year": 1, "req": [] },
+    { "id": "A1S1-02", "name": "Nociones de Ciencia Política y Sociología", "year": 1, "req": [] },
+    { "id": "A1S1-03", "name": "Principios de Derecho Privado", "year": 1, "req": [] },
+    { "id": "A1S1-04", "name": "Filosofía y Antropología", "year": 1, "req": [] },
+    { "id": "A1S1-05", "name": "Taller de Escritura Jurídica y Uso de las Fuentes de Información", "year": 1, "req": [] },
+
+    { "id": "A1S2-01", "name": "Formación del Pensamiento Jurídico-Político", "year": 1, "req": [] },
+    { "id": "A1S2-02", "name": "Instituciones de Derecho Privado", "year": 1, "req": [] },
+    { "id": "A1S2-03", "name": "Historia, Cultura y Derecho", "year": 1, "req": [] },
+    { "id": "A1S2-04", "name": "Derecho Romano", "year": 1, "req": [] },
+    { "id": "A1S2-05", "name": "Seminario Cuestiones de Antropología y Derecho", "year": 1, "req": [] },
+    { "id": "A1S2-06", "name": "Taller de introducción a la oratoria jurídica y a la argumentación", "year": 1, "req": [] },
+
+    { "id": "A2S1-01", "name": "Teoría Constitucional, Derechos y Garantías", "year": 2, "req": [] },
+    { "id": "A2S1-02", "name": "Obligaciones Civiles y Comerciales", "year": 2, "req": [] },
+    { "id": "A2S1-03", "name": "Nociones de Economía", "year": 2, "req": [] },
+    { "id": "A2S1-04", "name": "Historia del Derecho", "year": 2, "req": [] },
+    { "id": "A2S1-05", "name": "Ética y sus Fundamentos", "year": 2, "req": [] },
+    { "id": "A2S1-06", "name": "Taller de análisis de jurisprudencia", "year": 2, "req": [] },
+
+    { "id": "A2S2-01", "name": "Derecho Constitucional del Poder", "year": 2, "req": [] },
+    { "id": "A2S2-02", "name": "Derecho Penal –Parte General–", "year": 2, "req": [] },
+    { "id": "A2S2-03", "name": "Derecho de Daños", "year": 2, "req": [] },
+    { "id": "A2S2-04", "name": "Derecho Procesal Civil y Comercial", "year": 2, "req": [] },
+    { "id": "A2S2-05", "name": "Derechos Humanos", "year": 2, "req": [] },
+
+    { "id": "A3S1-01", "name": "Derecho Societario", "year": 3, "req": [] },
+    { "id": "A3S1-02", "name": "Contratos Civiles y Comerciales - Parte General", "year": 3, "req": [] },
+    { "id": "A3S1-03", "name": "Derecho Penal -Parte Especial-", "year": 3, "req": [] },
+    { "id": "A3S1-04", "name": "Introducción a la Teología", "year": 3, "req": [] },
+    { "id": "A3S1-05", "name": "Taller de métodos alternativos de resolución de conflictos", "year": 3, "req": [] },
+    { "id": "A3S1-06", "name": "Taller de práctica judicial", "year": 3, "req": [] },
+
+    { "id": "A3S2-01", "name": "Títulos Valores y Derecho Bancario", "year": 3, "req": [] },
+    { "id": "A3S2-02", "name": "Derecho Empresario", "year": 3, "req": [] },
+    { "id": "A3S2-03", "name": "Contratos Civiles y Comerciales –Parte Especial–", "year": 3, "req": [] },
+    { "id": "A3S2-04", "name": "Derecho Procesal Penal", "year": 3, "req": [] },
+    { "id": "A3S2-05", "name": "Derecho individual del trabajo y procesal laboral", "year": 3, "req": [] },
+    { "id": "A3S2-06", "name": "Derecho del consumidor y del usuario", "year": 3, "req": [] },
+
+    { "id": "A4S1-01", "name": "Derechos Reales –Parte General–", "year": 4, "req": [] },
+    { "id": "A4S1-02", "name": "Concursos y Quiebras", "year": 4, "req": [] },
+    { "id": "A4S1-03", "name": "Derecho Colectivo del Trabajo y derecho de la Seguridad Social", "year": 4, "req": [] },
+    { "id": "A4S1-04", "name": "Derecho Internacional Público y de la Integración", "year": 4, "req": [] },
+    { "id": "A4S1-05", "name": "Síntesis Teológica", "year": 4, "req": [] },
+    { "id": "A4S1-06", "name": "Seminario de lógica y argumentación jurídica", "year": 4, "req": [] },
+
+    { "id": "A4S2-01", "name": "Filosofía del Derecho", "year": 4, "req": [] },
+    { "id": "A4S2-02", "name": "Finanzas Públicas y Derecho Tributario", "year": 4, "req": [] },
+    { "id": "A4S2-03", "name": "Derechos Reales –Parte Especial–", "year": 4, "req": [] },
+    { "id": "A4S2-04", "name": "Derecho Ambiental y Recursos Naturales", "year": 4, "req": [] },
+    { "id": "A4S2-05", "name": "Seminario de metodología de investigación jurídica", "year": 4, "req": [] },
+
+    { "id": "A5S1-01", "name": "Derecho de Familia", "year": 5, "req": [] },
+    { "id": "A5S1-02", "name": "Ética Profesional", "year": 5, "req": [] },
+    { "id": "A5S1-03", "name": "Fundamentos de Derecho Administrativo", "year": 5, "req": [] },
+    { "id": "A5S1-04", "name": "Moral y Compromiso Social", "year": 5, "req": [] },
+    { "id": "A5S1-05", "name": "Derecho Canónico", "year": 5, "req": [] },
+    { "id": "A5S1-06", "name": "Taller de litigación oral", "year": 5, "req": [] },
+
+    { "id": "A5S2-01", "name": "Derecho Sucesorio", "year": 5, "req": [] },
+    { "id": "A5S2-02", "name": "Derecho Internacional Privado", "year": 5, "req": [] },
+    { "id": "A5S2-03", "name": "Instituciones de Derecho Administrativo", "year": 5, "req": [] },
+    { "id": "A5S2-04", "name": "Seminario Moral y Compromiso Social", "year": 5, "req": [] },
+    { "id": "A5S2-05", "name": "Clínica jurídica", "year": 5, "req": [] },
+
+    { "id": "REQ-ING", "name": "Requisito: Nivel de idioma inglés", "year": 5, "req": [] },
+
+    { "id": "TIT-PROC", "name": "Título intermedio: Procurador/a (hito)", "year": 3, "req": [] },
+    { "id": "TIT-ABOG", "name": "Título de grado: Abogado/a (hito)", "year": 5, "req": [] }
   ]
 }
