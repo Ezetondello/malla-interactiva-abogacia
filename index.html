@@ -228,34 +228,63 @@
   </style>
 </head>
 <body>
-  <header>
-    <h2 id="career"></h2>
-    <label>
-      Año:
-      <select id="yearFilter">
-        <option value="all">Todos</option>
-      </select>
-    </label>
-    <button id="reset">Reset progreso</button>
-  </header>
+ <body>
+  <div class="wrap">
+    <header>
+      <div class="brand">
+        <h2 id="career">Malla interactiva</h2>
+        <p class="sub">Clic en una materia para cambiar estado · Progreso guardado en este navegador</p>
+      </div>
 
-  <div class="grid" id="grid"></div>
+      <div class="controls">
+        <label>
+          Año:
+          <select id="yearFilter">
+            <option value="all">Todos</option>
+          </select>
+        </label>
+
+        <label>
+          Semestre:
+          <select id="semFilter">
+            <option value="all">Todos</option>
+            <option value="1">1°</option>
+            <option value="2">2°</option>
+          </select>
+        </label>
+
+        <button id="reset">Reset progreso</button>
+      </div>
+    </header>
+
+    <div class="stats" id="stats"></div>
+    <div id="content"></div>
+    <p class="footerTip">Tip: si una materia tiene correlativas, se bloqueará hasta que estén “Aprobadas”.</p>
+  </div>
 
 <script>
 const STATUS = ["pending","doing","done"];
 const labels = {pending:"Pendiente", doing:"En curso", done:"Aprobada"};
 
-const storeKey = "malla_status_v1";
+const storeKey = "malla_status_v2";
 let data, statusMap = JSON.parse(localStorage.getItem(storeKey) || "{}");
 
-function canUnlock(subj){
-  return (subj.req || []).every(r => statusMap[r] === "done");
-}
+function save(){ localStorage.setItem(storeKey, JSON.stringify(statusMap)); }
+
 function nextStatus(current){
   const i = STATUS.indexOf(current || "pending");
   return STATUS[(i + 1) % STATUS.length];
 }
-function save(){ localStorage.setItem(storeKey, JSON.stringify(statusMap)); }
+
+function canUnlock(subj){
+  return (subj.req || []).every(r => statusMap[r] === "done");
+}
+
+// Detecta semestre desde id tipo "A3S2-01"
+function getSemesterFromId(id){
+  const m = String(id).match(/S([12])/);
+  return m ? Number(m[1]) : null;
+}
 
 function buildYearFilter(subjects){
   const years = [...new Set(subjects.map(s => s.year))].sort((a,b)=>a-b);
@@ -267,30 +296,97 @@ function buildYearFilter(subjects){
     sel.appendChild(o);
   });
   sel.addEventListener("change", render);
+  document.getElementById("semFilter").addEventListener("change", render);
+}
+
+function computeStats(subjects){
+  const total = subjects.length;
+  let done=0, doing=0, pending=0;
+  subjects.forEach(s=>{
+    const st = statusMap[s.id] || "pending";
+    if(st==="done") done++;
+    else if(st==="doing") doing++;
+    else pending++;
+  });
+  return {total, done, doing, pending};
+}
+
+function renderStats(filteredSubjects){
+  const {total, done, doing, pending} = computeStats(filteredSubjects);
+  const stats = document.getElementById("stats");
+  stats.innerHTML = `
+    <span class="chip"><span class="dot"></span>Total: <b>${total}</b></span>
+    <span class="chip"><span class="dot" style="background:#9fe3b8"></span>Aprobadas: <b>${done}</b></span>
+    <span class="chip"><span class="dot" style="background:#f7c4d8"></span>En curso: <b>${doing}</b></span>
+    <span class="chip"><span class="dot" style="background:#ffd1e3"></span>Pendientes: <b>${pending}</b></span>
+  `;
 }
 
 function render(){
-  const grid = document.getElementById("grid");
-  grid.innerHTML = "";
-  const filter = document.getElementById("yearFilter").value;
+  const yearFilter = document.getElementById("yearFilter").value;
+  const semFilter  = document.getElementById("semFilter").value;
 
-  data.subjects
-    .filter(s => filter==="all" ? true : String(s.year)===filter)
-    .sort((a,b)=> a.year-b.year || a.id.localeCompare(b.id))
-    .forEach(subj=>{
+  let subjects = data.subjects
+    .map(s => ({...s, semester: getSemesterFromId(s.id)}));
+
+  // Filtrado
+  subjects = subjects.filter(s => {
+    const yearOk = (yearFilter==="all") ? true : String(s.year)===yearFilter;
+    const semOk  = (semFilter==="all") ? true : String(s.semester||"")===semFilter;
+    return yearOk && semOk;
+  });
+
+  renderStats(subjects);
+
+  // Agrupar por Año y Semestre
+  const groups = new Map(); // key = "year-sem"
+  subjects
+    .sort((a,b)=> a.year-b.year || (a.semester||0)-(b.semester||0) || a.id.localeCompare(b.id))
+    .forEach(s=>{
+      const key = `${s.year}-${s.semester||0}`;
+      if(!groups.has(key)) groups.set(key, []);
+      groups.get(key).push(s);
+    });
+
+  const content = document.getElementById("content");
+  content.innerHTML = "";
+
+  [...groups.entries()].forEach(([key, list])=>{
+    const [y, sem] = key.split("-");
+    const semLabel = sem==="1" ? "1° semestre" : sem==="2" ? "2° semestre" : "Sin semestre";
+
+    const section = document.createElement("section");
+    section.className = "section";
+
+    section.innerHTML = `
+      <div class="sectionHead">
+        <h3 class="sectionTitle">Año ${y} · ${semLabel}</h3>
+        <p class="sectionHint">${list.length} materias</p>
+      </div>
+      <div class="grid"></div>
+    `;
+
+    const grid = section.querySelector(".grid");
+
+    list.forEach(subj=>{
       const st = statusMap[subj.id] || "pending";
       const unlocked = canUnlock(subj);
 
       const card = document.createElement("div");
       card.className = `card ${st} ${unlocked? "" : "locked"}`;
 
+      const reqText = subj.req?.length ? subj.req.join(", ") : "Ninguna";
+      const semTxt = subj.semester ? `S${subj.semester}` : "";
+
       card.innerHTML = `
-        <div class="title">${subj.name}</div>
-        <div class="meta">${subj.id} · Año ${subj.year} · 
-          <span class="pill ${st}">${labels[st]}</span>
+        <p class="title">${subj.name}</p>
+        <div class="meta">
+          <span>${subj.id}</span>
+          <span>·</span>
+          <span>A${subj.year}${semTxt ? " · "+semTxt : ""}</span>
+          <span class="pill">${labels[st]}</span>
         </div>
-        <div class="req">Correlativas: ${subj.req?.length ? subj.req.join(", ") : "Ninguna"}</div>
-        <div class="req" style="margin-top:8px;">Tip: clic para cambiar estado</div>
+        <div class="req"><b>Correlativas:</b> ${reqText}</div>
       `;
 
       card.addEventListener("click", ()=>{
@@ -305,6 +401,9 @@ function render(){
 
       grid.appendChild(card);
     });
+
+    content.appendChild(section);
+  });
 }
 
 async function init(){
@@ -313,7 +412,7 @@ async function init(){
   buildYearFilter(data.subjects);
 
   document.getElementById("reset").addEventListener("click", ()=>{
-    if(confirm("¿Resetear progreso?")){
+    if(confirm("¿Resetear progreso guardado en este navegador?")){
       statusMap = {};
       save();
       render();
