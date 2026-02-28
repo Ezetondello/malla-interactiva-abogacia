@@ -3,203 +3,151 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Malla interactiva</title>
+  <title>Malla</title>
 
   <style>
     :root{
-      --bg: #fff6fb;
-      --surface: rgba(255,255,255,.78);
-      --text: #3f2d3a;
+      --bg1:#f6b3cf;
+      --bg2:#ee98bf;
+      --panel: rgba(255,255,255,.78);
+      --border: rgba(255,255,255,.55);
+      --text:#3f2d3a;
       --muted: rgba(63,45,58,.72);
-
-      --border: #f1cfe0;
-      --shadow: 0 10px 22px rgba(183,110,138,.18);
-
-      --pink-1:#fff0f7;
-      --pink-2:#ffe3ef;
-      --pink-3:#f7c4d8;
-      --pink-4:#b76e8a;
+      --pink:#b76e8a;
 
       --pending:#fff0f7;
       --doing:#ffe3ef;
       --done:#e9fbf2;
 
-      --radius: 22px;
+      --radius:18px;
     }
 
     *{box-sizing:border-box}
     body{
       margin:0;
-      font-family:ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
-  color: var(--text);
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      color: var(--text);
       background:
-      radial-gradient(1200px 600px at 10% -10%, #f8cfe2 0%, transparent 60%),
-    radial-gradient(1000px 600px at 110% 10%, #f4b8d3 0%, transparent 65%),
-    linear-gradient(180deg, #f6c1d9 0%, #f3b2cf 100%);
+        radial-gradient(1200px 600px at 10% -10%, #f8cfe2 0%, transparent 60%),
+        radial-gradient(1000px 600px at 110% 10%, #f4b8d3 0%, transparent 65%),
+        linear-gradient(180deg, var(--bg1) 0%, var(--bg2) 100%);
     }
 
-    .wrap{max-width:1200px;margin:26px auto 60px;padding:0 18px;}
+    .wrap{max-width:980px;margin:22px auto 50px;padding:0 16px;}
 
     header{
-      display:flex; gap:12px; flex-wrap:wrap;
-      align-items:center; justify-content:space-between;
-      padding:16px 18px;
-      background: var(--surface);
+      display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;
+      padding:14px 16px;
+      background: var(--panel);
       border:1px solid var(--border);
       border-radius: var(--radius);
       backdrop-filter: blur(10px);
-      box-shadow: 0 8px 18px rgba(183,110,138,.12);
     }
+    h1{margin:0;font-size:16px;color:var(--pink);letter-spacing:.2px}
+    .sub{margin:4px 0 0;font-size:12px;color:var(--muted)}
+    .left{display:flex;flex-direction:column}
 
-    .brand{display:flex;flex-direction:column;gap:4px;min-width:260px}
-    h2{margin:0;font-size:18px;color:var(--pink-4);letter-spacing:.2px}
-    .sub{margin:0;font-size:13px;color:var(--muted)}
-
-    .controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    .controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
     select,button{
-      padding:10px 12px;
-      border:1px solid var(--border);
-      border-radius:14px;
+      padding:9px 10px;
+      border-radius: 14px;
+      border:1px solid rgba(183,110,138,.25);
       background:#fff;
       color:var(--text);
       font-weight:650;
       cursor:pointer;
+      font-size:12px;
     }
-    select:hover, button:hover{
-      border-color: var(--pink-3);
-      box-shadow: 0 10px 18px rgba(183,110,138,.14);
-    }
+    button:hover, select:hover{border-color: rgba(183,110,138,.55)}
 
     .legend{
-      display:flex; gap:10px; flex-wrap:wrap;
-      margin:14px 4px 0;
+      display:flex;gap:8px;flex-wrap:wrap;
+      margin:10px 2px 0;
+      font-size:12px;
       color:var(--muted);
-      font-size:13px;
+    }
+    .tag{
+      display:inline-flex;gap:6px;align-items:center;
+      padding:7px 10px;border-radius:999px;
+      background: var(--panel);
+      border:1px solid var(--border);
+    }
+    .dot{width:9px;height:9px;border-radius:999px}
+    .dot.p{background:#ffd1e3}
+    .dot.d{background:#f7c4d8}
+    .dot.ok{background:#9fe3b8}
+
+    .semester{
+      margin-top:16px;
+      background: var(--panel);
+      border:1px solid var(--border);
+      border-radius: var(--radius);
+      padding:12px;
+      backdrop-filter: blur(10px);
+    }
+    .semesterHead{
+      display:flex;align-items:baseline;justify-content:space-between;gap:10px;
+      padding:4px 4px 10px;
+    }
+    .semesterTitle{margin:0;font-size:13px;color:#7b3f61;font-weight:850}
+    .count{margin:0;font-size:12px;color:var(--muted)}
+
+    /* CHIPS compactos */
+    .chips{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      padding: 4px;
     }
     .chip{
-      display:inline-flex; gap:8px; align-items:center;
-      padding:8px 12px;
-      border:1px solid var(--border);
-      border-radius:999px;
-      background: var(--surface);
-    }
-    .dot{width:10px;height:10px;border-radius:999px;display:inline-block}
-    .dot.pending{background:#ffd1e3}
-    .dot.doing{background:#f7c4d8}
-    .dot.done{background:#9fe3b8}
+      width: calc(50% - 10px);
+      min-width: 240px;
+      max-width: 420px;
 
-    /* ======= Columnas por semestre ======= */
-    .board{
-      margin-top:18px;
       display:flex;
-      gap:16px;
-      overflow:auto;
-      padding: 6px 2px 14px;
-      scroll-snap-type: x mandatory;
-    }
-    .col{
-      min-width: 290px;
-      max-width: 320px;
-      flex: 0 0 auto;
-      background: rgba(255,255,255,.65);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      box-shadow: 0 8px 18px rgba(183,110,138,.10);
-      padding: 12px;
-      scroll-snap-align: start;
-    }
-    .colHead{
-      display:flex;
+      align-items:center;
       justify-content:space-between;
-      align-items:baseline;
       gap:10px;
-      padding: 6px 6px 10px;
-      border-bottom: 1px solid rgba(241,207,224,.75);
-      margin-bottom: 10px;
-    }
-    .colTitle{
-      margin:0;
-      font-size: 14px;
-      font-weight: 850;
-      color:#8b4a64;
-      letter-spacing:.2px;
-    }
-    .colCount{
-      margin:0;
-      font-size: 12px;
-      color: var(--muted);
-    }
 
-    .stack{display:flex;flex-direction:column;gap:10px}
-
-    /* Tarjetas */
-    .card{
-      border:1px solid var(--border);
-      border-radius: 18px;
-      padding: 12px 12px 10px;
-      background: #fff;
-      box-shadow: var(--shadow);
-      transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+      padding:10px 12px;
+      border-radius: 14px;
+      border:1px solid rgba(183,110,138,.22);
+      background:#fff;
       cursor:pointer;
+      transition: transform .15s ease, border-color .15s ease;
     }
-    .card:hover{
-      transform: translateY(-2px);
-      border-color: var(--pink-3);
-      box-shadow: 0 14px 28px rgba(183,110,138,.22);
+    .chip:hover{transform: translateY(-1px);border-color: rgba(183,110,138,.45)}
+
+    .name{
+      font-size:12.5px;
+      font-weight:800;
+      color:#6b3a52;
+      line-height:1.25;
     }
 
-    .meta{
-      display:flex; gap:8px; flex-wrap:wrap; align-items:center;
-      font-size: 12px;
-      color: var(--muted);
-      margin-bottom: 8px;
+    .status{
+      font-size:11px;
+      font-weight:900;
+      padding:6px 9px;
+      border-radius:999px;
+      border:1px solid rgba(183,110,138,.18);
+      white-space:nowrap;
     }
+    .pending .status{background:var(--pending)}
+    .doing .status{background:var(--doing)}
+    .done .status{background:var(--done)}
 
-    .pill{
-      display:inline-flex; align-items:center;
-      padding: 6px 10px;
-      border-radius: 999px;
-      border: 1px solid var(--border);
-      font-size: 12px;
-      font-weight: 800;
-    }
-
-    .pending .pill{ background: var(--pending); }
-    .doing   .pill{ background: var(--doing); }
-    .done    .pill{ background: var(--done); }
-
-    /* ✅ TACHADO cuando está aprobada */
-    .title{
-      margin:0;
-      font-size: 14px;
-      line-height: 1.25;
-      font-weight: 800;
-      color:#7b3f61;
-    }
-    .done .title{
+    /* ✅ Tachado al aprobar */
+    .done .name{
       text-decoration: line-through;
       text-decoration-thickness: 2px;
-      text-decoration-color: rgba(183,110,138,.65);
-      opacity: .85;
+      text-decoration-color: rgba(183,110,138,.55);
+      opacity:.85;
     }
 
-    .req{
-      font-size: 12px;
-      color: var(--muted);
-      line-height: 1.35;
-      margin-top: 8px;
-    }
-
-    .locked{
-      opacity:.55;
-      filter: grayscale(.2);
-      cursor:not-allowed;
-    }
-
-    .foot{
-      margin: 14px 6px 0;
-      font-size: 12px;
-      color: var(--muted);
+    .locked{opacity:.55;cursor:not-allowed}
+    @media (max-width: 560px){
+      .chip{width:100%;min-width:auto}
     }
   </style>
 </head>
@@ -207,9 +155,9 @@
 <body>
   <div class="wrap">
     <header>
-      <div class="brand">
-        <h2 id="career">Malla interactiva</h2>
-        <p class="sub">Clic para cambiar estado · “Aprobada” se tacha · Guardado en este navegador</p>
+      <div class="left">
+        <h1 id="career">Malla</h1>
+        <p class="sub">Clic para cambiar estado · Aprobada = tachado</p>
       </div>
 
       <div class="controls">
@@ -219,43 +167,34 @@
             <option value="all">Todos</option>
           </select>
         </label>
-        <button id="reset">Reset progreso</button>
+        <button id="reset">Reset</button>
       </div>
     </header>
 
     <div class="legend" id="legend"></div>
-
-    <div class="board" id="board"></div>
-
-    <p class="foot">Tip: si después agregás correlativas en <code>data.json</code>, se bloquearán solas hasta aprobar las previas.</p>
+    <div id="content"></div>
   </div>
 
 <script>
   const STATUS = ["pending","doing","done"];
-  const labels = {pending:"Pendiente", doing:"En curso", done:"Aprobada"};
-  const storeKey = "malla_status_board_v1";
+  const labels = { pending:"Pendiente", doing:"En curso", done:"Aprobada" };
+  const storeKey = "malla_compact_v1";
 
   let data, statusMap = JSON.parse(localStorage.getItem(storeKey) || "{}");
 
   function save(){ localStorage.setItem(storeKey, JSON.stringify(statusMap)); }
-
   function nextStatus(current){
     const i = STATUS.indexOf(current || "pending");
     return STATUS[(i + 1) % STATUS.length];
   }
 
-  function canUnlock(subj){
-    return (subj.req || []).every(r => statusMap[r] === "done");
-  }
-
-  // Detecta semestre desde id tipo "A3S2-01"
-  function getSemesterFromId(id){
+  function getYearSemFromId(id){
     const m = String(id).match(/A(\d)S([12])/);
-    return m ? { year: Number(m[1]), sem: Number(m[2]) } : { year: null, sem: null };
+    return m ? { y:Number(m[1]), s:Number(m[2]) } : { y:null, s:null };
   }
 
   function buildYearFilter(subjects){
-    const years = [...new Set(subjects.map(s => s.year).filter(Boolean))].sort((a,b)=>a-b);
+    const years = [...new Set(subjects.map(s=>s.year).filter(Boolean))].sort((a,b)=>a-b);
     const sel = document.getElementById("yearFilter");
     years.forEach(y=>{
       const o = document.createElement("option");
@@ -266,122 +205,94 @@
     sel.addEventListener("change", render);
   }
 
-  function renderLegend(filtered){
-    let done=0, doing=0, pending=0;
-    filtered.forEach(s=>{
+  function renderLegend(list){
+    let p=0,d=0,ok=0;
+    list.forEach(s=>{
       const st = statusMap[s.id] || "pending";
-      if(st==="done") done++;
-      else if(st==="doing") doing++;
-      else pending++;
+      if(st==="done") ok++;
+      else if(st==="doing") d++;
+      else p++;
     });
-
     document.getElementById("legend").innerHTML = `
-      <span class="chip"><span class="dot pending"></span>Pendientes: <b>${pending}</b></span>
-      <span class="chip"><span class="dot doing"></span>En curso: <b>${doing}</b></span>
-      <span class="chip"><span class="dot done"></span>Aprobadas: <b>${done}</b></span>
-      <span class="chip">Total: <b>${filtered.length}</b></span>
+      <span class="tag"><span class="dot p"></span>Pendientes <b>${p}</b></span>
+      <span class="tag"><span class="dot d"></span>En curso <b>${d}</b></span>
+      <span class="tag"><span class="dot ok"></span>Aprobadas <b>${ok}</b></span>
+      <span class="tag">Total <b>${list.length}</b></span>
     `;
   }
 
   function render(){
     const yearFilter = document.getElementById("yearFilter").value;
 
-    // Enriquecer con sem detectado desde id
     let subjects = data.subjects.map(s=>{
-      const p = getSemesterFromId(s.id);
-      return { ...s, sem: p.sem ?? s.sem, year: s.year ?? p.year };
+      const ys = getYearSemFromId(s.id);
+      return { ...s, year: s.year ?? ys.y, sem: ys.s };
     });
 
-    // Filtrar por año (como en tu pedido actual)
     subjects = subjects.filter(s => yearFilter==="all" ? true : String(s.year)===yearFilter);
-
-    // Orden Año/Semestre y luego por id
     subjects.sort((a,b)=> a.year-b.year || a.sem-b.sem || a.id.localeCompare(b.id));
 
     renderLegend(subjects);
 
-    // Agrupar por Año + Semestre (columnas)
-    const cols = new Map(); // key: "A1-S1"
+    // agrupar por semestre
+    const groups = new Map();
     subjects.forEach(s=>{
-      const key = `A${s.year}-S${s.sem || 0}`;
-      if(!cols.has(key)) cols.set(key, []);
-      cols.get(key).push(s);
+      const key = `Año ${s.year} · ${s.sem}° semestre`;
+      if(!groups.has(key)) groups.set(key, []);
+      groups.get(key).push(s);
     });
 
-    const board = document.getElementById("board");
-    board.innerHTML = "";
+    const content = document.getElementById("content");
+    content.innerHTML = "";
 
-    [...cols.entries()].forEach(([key, list])=>{
-      const [Ay, Ss] = key.split("-");
-      const year = Ay.replace("A","");
-      const sem = Ss.replace("S","");
-      const title = sem==="1" ? `Año ${year} · 1° Semestre`
-                   : sem==="2" ? `Año ${year} · 2° Semestre`
-                   : `Año ${year}`;
-
-      const col = document.createElement("div");
-      col.className = "col";
-      col.innerHTML = `
-        <div class="colHead">
-          <h3 class="colTitle">${title}</h3>
-          <p class="colCount">${list.length} materias</p>
+    [...groups.entries()].forEach(([title, list])=>{
+      const box = document.createElement("div");
+      box.className = "semester";
+      box.innerHTML = `
+        <div class="semesterHead">
+          <p class="semesterTitle">${title}</p>
+          <p class="count">${list.length}</p>
         </div>
-        <div class="stack"></div>
+        <div class="chips"></div>
       `;
 
-      const stack = col.querySelector(".stack");
+      const chips = box.querySelector(".chips");
 
       list.forEach(subj=>{
         const st = statusMap[subj.id] || "pending";
-        const unlocked = canUnlock(subj);
 
-        const card = document.createElement("div");
-        card.className = `card ${st} ${unlocked? "" : "locked"}`;
-
-        const reqText = subj.req?.length ? subj.req.join(", ") : "Ninguna";
-
-        card.innerHTML = `
-          <div class="meta">
-            <span>${subj.id}</span>
-            <span>·</span>
-            <span>A${subj.year}S${subj.sem}</span>
-            <span class="pill">${labels[st]}</span>
-          </div>
-          <p class="title">${subj.name}</p>
-          <div class="req"><b>Correlativas:</b> ${reqText}</div>
+        const chip = document.createElement("div");
+        chip.className = `chip ${st}`;
+        chip.innerHTML = `
+          <div class="name">${subj.name}</div>
+          <div class="status">${labels[st]}</div>
         `;
 
-        card.addEventListener("click", ()=>{
-          if(!unlocked && st!=="done"){
-            alert("Bloqueada: primero aprobá correlativas.");
-            return;
-          }
+        chip.addEventListener("click", ()=>{
           statusMap[subj.id] = nextStatus(st);
           save();
           render();
         });
 
-        stack.appendChild(card);
+        chips.appendChild(chip);
       });
 
-      board.appendChild(col);
+      content.appendChild(box);
     });
   }
 
+  document.getElementById("reset").addEventListener("click", ()=>{
+    if(confirm("¿Resetear progreso?")){
+      statusMap = {};
+      save();
+      render();
+    }
+  });
+
   async function init(){
     data = await fetch("./data.json").then(r=>r.json());
-    document.getElementById("career").textContent = data.career || "Malla interactiva";
-
+    document.getElementById("career").textContent = data.career || "Malla";
     buildYearFilter(data.subjects);
-
-    document.getElementById("reset").addEventListener("click", ()=>{
-      if(confirm("¿Resetear el progreso guardado en este navegador?")){
-        statusMap = {};
-        save();
-        render();
-      }
-    });
-
     render();
   }
   init();
