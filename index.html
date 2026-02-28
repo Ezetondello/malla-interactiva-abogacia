@@ -1,180 +1,231 @@
 <!doctype html>
 <html lang="es">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Malla</title>
 
 <style>
-:root{
-  --rosaPastel1:#fde7f0;
-  --rosaPastel2:#f9d6e5;
-  --rosaTexto:#8b4a64;
-  --texto:#4a3a45;
-}
+  :root{
+    --bgTop:#fde7f0;
+    --bgBottom:#f9d6e5;
 
-*{box-sizing:border-box}
+    --panel: rgba(255,255,255,.70);
+    --panelBorder: rgba(139,74,100,.16);
 
-body{
-  margin:0;
-  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
-  background: linear-gradient(180deg, var(--rosaPastel1) 0%, var(--rosaPastel2) 100%);
-  color: var(--texto);
-}
-
-.wrap{
-  max-width:900px;
-  margin:60px auto;
-  padding:0 20px;
-}
-
-/* ELIPSE */
-.oval{
-  position: relative;
-  padding: 60px 60px;
-  margin: 0 auto;
-  max-width: 760px;
-}
-
-.oval::before{
-  content:"";
-  position:absolute;
-  inset: 0;
-  background: rgba(255,255,255,.55);
-  border: 1px solid rgba(139,74,100,.18);
-  border-radius: 50% / 28%;
-  box-shadow: 0 22px 60px rgba(139,74,100,.15);
-  z-index: 0;
-}
-
-.oval > *{
-  position: relative;
-  z-index: 1;
-}
-
-h1{
-  text-align:center;
-  font-size:18px;
-  color:var(--rosaTexto);
-  font-weight:600;
-  margin-bottom:40px;
-}
-
-.semestre{
-  margin-bottom:36px;
-}
-
-.semestre h2{
-  font-size:14px;
-  font-weight:700;
-  color:var(--rosaTexto);
-  margin-bottom:16px;
-  letter-spacing:.5px;
-}
-
-.materia{
-  padding:8px 0;
-  font-size:14px;
-  cursor:pointer;
-  transition:opacity .2s ease;
-}
-
-.materia:hover{
-  opacity:.7;
-}
-
-.aprobada{
-  text-decoration: line-through;
-  text-decoration-thickness: 2px;
-  opacity:.6;
-}
-
-@media (max-width: 700px){
-  .oval{
-    padding: 40px 30px;
+    --title:#8b4a64;
+    --text:#4a3a45;
+    --muted: rgba(74,58,69,.70);
   }
-  .oval::before{
-    border-radius: 50% / 24%;
+
+  *{ box-sizing:border-box; }
+
+  body{
+    margin:0;
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
+    background: linear-gradient(180deg, var(--bgTop) 0%, var(--bgBottom) 100%);
+    color: var(--text);
   }
-}
+
+  .wrap{
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding: 36px 18px;
+  }
+
+  /* “Capsule” (forma nueva, más linda que elipse) */
+  .panel{
+    width: min(760px, 100%);
+    background: var(--panel);
+    border: 1px solid var(--panelBorder);
+    border-radius: 44px;
+    padding: 34px 34px 28px;
+    box-shadow: 0 20px 55px rgba(139,74,100,.12);
+    backdrop-filter: blur(10px);
+  }
+
+  header{
+    text-align:center;
+    padding: 8px 10px 22px;
+  }
+
+  h1{
+    margin:0;
+    font-size:18px;
+    font-weight:650;
+    color: var(--title);
+    letter-spacing:.2px;
+  }
+
+  .sub{
+    margin: 8px 0 0;
+    font-size: 12.5px;
+    color: var(--muted);
+  }
+
+  .divider{
+    height:1px;
+    background: rgba(139,74,100,.12);
+    margin: 8px 0 18px;
+  }
+
+  .semestre{
+    margin: 18px 0 26px;
+  }
+
+  .semestre h2{
+    margin: 0 0 12px;
+    font-size: 13px;
+    font-weight: 750;
+    color: var(--title);
+    letter-spacing:.4px;
+  }
+
+  .materia{
+    padding: 8px 2px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: opacity .18s ease, transform .18s ease;
+  }
+
+  .materia:hover{
+    opacity: .78;
+    transform: translateX(2px);
+  }
+
+  .aprobada{
+    text-decoration: line-through;
+    text-decoration-thickness: 2px;
+    text-decoration-color: rgba(139,74,100,.55);
+    opacity: .62;
+  }
+
+  /* Botoncito minimal para reset */
+  .actions{
+    display:flex;
+    justify-content:center;
+    margin-top: 6px;
+  }
+
+  button{
+    border: 1px solid rgba(139,74,100,.18);
+    background: rgba(255,255,255,.75);
+    color: var(--title);
+    font-weight: 700;
+    font-size: 12px;
+    padding: 10px 14px;
+    border-radius: 999px;
+    cursor:pointer;
+    transition: opacity .18s ease;
+  }
+
+  button:hover{ opacity: .85; }
+
+  @media (max-width:560px){
+    .panel{ padding: 26px 20px 22px; border-radius: 34px; }
+  }
 </style>
 </head>
 
 <body>
-<div class="wrap">
+  <div class="wrap">
+    <div class="panel">
+      <header>
+        <h1 id="career">Mi malla</h1>
+        <p class="sub">Tocá una materia para marcarla como rendida (se tacha)</p>
+      </header>
 
-<div class="oval">
-  <h1 id="career">Mi camino académico</h1>
-  <div id="content"></div>
-</div>
+      <div class="divider"></div>
 
-</div>
+      <div id="content"></div>
+
+      <div class="actions">
+        <button id="reset">Reset</button>
+      </div>
+    </div>
+  </div>
 
 <script>
-const storeKey = "malla_minimal_v2";
-let data, aprobadas = JSON.parse(localStorage.getItem(storeKey) || "[]");
+  const storeKey = "malla_minimal_capsule_v1";
+  let data, aprobadas = JSON.parse(localStorage.getItem(storeKey) || "[]");
 
-function save(){
-  localStorage.setItem(storeKey, JSON.stringify(aprobadas));
-}
+  function save(){
+    localStorage.setItem(storeKey, JSON.stringify(aprobadas));
+  }
 
-function getSemesterFromId(id){
-  const m = String(id).match(/A(\d)S([12])/);
-  return m ? `Año ${m[1]} · ${m[2]}° semestre` : "Otros";
-}
+  function getSemesterFromId(id){
+    const m = String(id).match(/A(\d)S([12])/);
+    return m ? `Año ${m[1]} · ${m[2]}° semestre` : "Otros";
+  }
 
-function render(){
-  const content = document.getElementById("content");
-  content.innerHTML = "";
+  function render(){
+    const content = document.getElementById("content");
+    content.innerHTML = "";
 
-  const groups = {};
+    const groups = {};
 
-  data.subjects.forEach(s=>{
-    const key = getSemesterFromId(s.id);
-    if(!groups[key]) groups[key]=[];
-    groups[key].push(s);
-  });
-
-  Object.keys(groups).forEach(sem=>{
-    const section = document.createElement("div");
-    section.className="semestre";
-
-    section.innerHTML=`<h2>${sem}</h2>`;
-
-    groups[sem].forEach(subj=>{
-      const div = document.createElement("div");
-      div.className="materia";
-      if(aprobadas.includes(subj.id)){
-        div.classList.add("aprobada");
-      }
-
-      div.textContent=subj.name;
-
-      div.addEventListener("click",()=>{
-        if(aprobadas.includes(subj.id)){
-          aprobadas = aprobadas.filter(id=>id!==subj.id);
-        } else {
-          aprobadas.push(subj.id);
-        }
-        save();
-        render();
-      });
-
-      section.appendChild(div);
+    data.subjects.forEach(s=>{
+      const key = getSemesterFromId(s.id);
+      if(!groups[key]) groups[key] = [];
+      groups[key].push(s);
     });
 
-    content.appendChild(section);
+    // Orden básico: Año 1 S1, Año 1 S2, Año 2 S1...
+    const keys = Object.keys(groups).sort((a,b)=>{
+      const pa = a.match(/Año (\d) · ([12])°/);
+      const pb = b.match(/Año (\d) · ([12])°/);
+      const ay = pa ? Number(pa[1]) : 99;
+      const as = pa ? Number(pa[2]) : 99;
+      const by = pb ? Number(pb[1]) : 99;
+      const bs = pb ? Number(pb[2]) : 99;
+      return ay-by || as-bs || a.localeCompare(b);
+    });
+
+    keys.forEach(sem=>{
+      const section = document.createElement("div");
+      section.className = "semestre";
+      section.innerHTML = `<h2>${sem}</h2>`;
+
+      groups[sem].forEach(subj=>{
+        const div = document.createElement("div");
+        div.className = "materia";
+        if(aprobadas.includes(subj.id)) div.classList.add("aprobada");
+        div.textContent = subj.name;
+
+        div.addEventListener("click", ()=>{
+          if(aprobadas.includes(subj.id)){
+            aprobadas = aprobadas.filter(x => x !== subj.id);
+          } else {
+            aprobadas.push(subj.id);
+          }
+          save();
+          render();
+        });
+
+        section.appendChild(div);
+      });
+
+      content.appendChild(section);
+    });
+  }
+
+  document.getElementById("reset").addEventListener("click", ()=>{
+    if(confirm("¿Resetear materias rendidas?")){
+      aprobadas = [];
+      save();
+      render();
+    }
   });
-}
 
-async function init(){
-  data = await fetch("./data.json").then(r=>r.json());
-  document.getElementById("career").textContent = data.career || "Mi malla";
-  render();
-}
+  async function init(){
+    data = await fetch("./data.json").then(r=>r.json());
+    document.getElementById("career").textContent = data.career || "Mi malla";
+    render();
+  }
 
-init();
+  init();
 </script>
-
 </body>
 </html>
