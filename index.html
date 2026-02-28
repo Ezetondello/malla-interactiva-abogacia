@@ -1,301 +1,146 @@
 <!doctype html>
 <html lang="es">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Malla</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Malla</title>
 
-  <style>
-    :root{
-      --bg1:#f6b3cf;
-      --bg2:#ee98bf;
-      --panel: rgba(255,255,255,.78);
-      --border: rgba(255,255,255,.55);
-      --text:#3f2d3a;
-      --muted: rgba(63,45,58,.72);
-      --pink:#b76e8a;
+<style>
+:root{
+  --rosaPastel1:#fde7f0;
+  --rosaPastel2:#f9d6e5;
+  --rosaTexto:#8b4a64;
+  --texto:#4a3a45;
+}
 
-      --pending:#fff0f7;
-      --doing:#ffe3ef;
-      --done:#e9fbf2;
+*{box-sizing:border-box}
 
-      --radius:18px;
-    }
+body{
+  margin:0;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
+  background: linear-gradient(180deg, var(--rosaPastel1) 0%, var(--rosaPastel2) 100%);
+  color: var(--texto);
+}
 
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
-      color: var(--text);
-      background:
-        radial-gradient(1200px 600px at 10% -10%, #f8cfe2 0%, transparent 60%),
-        radial-gradient(1000px 600px at 110% 10%, #f4b8d3 0%, transparent 65%),
-        linear-gradient(180deg, var(--bg1) 0%, var(--bg2) 100%);
-    }
+.wrap{
+  max-width:700px;
+  margin:50px auto;
+  padding:0 20px;
+}
 
-    .wrap{max-width:980px;margin:22px auto 50px;padding:0 16px;}
+h1{
+  text-align:center;
+  font-size:18px;
+  color:var(--rosaTexto);
+  font-weight:600;
+  margin-bottom:40px;
+}
 
-    header{
-      display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;
-      padding:14px 16px;
-      background: var(--panel);
-      border:1px solid var(--border);
-      border-radius: var(--radius);
-      backdrop-filter: blur(10px);
-    }
-    h1{margin:0;font-size:16px;color:var(--pink);letter-spacing:.2px}
-    .sub{margin:4px 0 0;font-size:12px;color:var(--muted)}
-    .left{display:flex;flex-direction:column}
+.semestre{
+  margin-bottom:36px;
+}
 
-    .controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-    select,button{
-      padding:9px 10px;
-      border-radius: 14px;
-      border:1px solid rgba(183,110,138,.25);
-      background:#fff;
-      color:var(--text);
-      font-weight:650;
-      cursor:pointer;
-      font-size:12px;
-    }
-    button:hover, select:hover{border-color: rgba(183,110,138,.55)}
+.semestre h2{
+  font-size:14px;
+  font-weight:700;
+  color:var(--rosaTexto);
+  margin-bottom:16px;
+  letter-spacing:.5px;
+}
 
-    .legend{
-      display:flex;gap:8px;flex-wrap:wrap;
-      margin:10px 2px 0;
-      font-size:12px;
-      color:var(--muted);
-    }
-    .tag{
-      display:inline-flex;gap:6px;align-items:center;
-      padding:7px 10px;border-radius:999px;
-      background: var(--panel);
-      border:1px solid var(--border);
-    }
-    .dot{width:9px;height:9px;border-radius:999px}
-    .dot.p{background:#ffd1e3}
-    .dot.d{background:#f7c4d8}
-    .dot.ok{background:#9fe3b8}
+.materia{
+  padding:8px 0;
+  font-size:14px;
+  cursor:pointer;
+  transition:opacity .2s ease;
+}
 
-    .semester{
-      margin-top:16px;
-      background: var(--panel);
-      border:1px solid var(--border);
-      border-radius: var(--radius);
-      padding:12px;
-      backdrop-filter: blur(10px);
-    }
-    .semesterHead{
-      display:flex;align-items:baseline;justify-content:space-between;gap:10px;
-      padding:4px 4px 10px;
-    }
-    .semesterTitle{margin:0;font-size:13px;color:#7b3f61;font-weight:850}
-    .count{margin:0;font-size:12px;color:var(--muted)}
+.materia:hover{
+  opacity:.7;
+}
 
-    /* CHIPS compactos */
-    .chips{
-      display:flex;
-      flex-wrap:wrap;
-      gap:10px;
-      padding: 4px;
-    }
-    .chip{
-      width: calc(50% - 10px);
-      min-width: 240px;
-      max-width: 420px;
-
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-
-      padding:10px 12px;
-      border-radius: 14px;
-      border:1px solid rgba(183,110,138,.22);
-      background:#fff;
-      cursor:pointer;
-      transition: transform .15s ease, border-color .15s ease;
-    }
-    .chip:hover{transform: translateY(-1px);border-color: rgba(183,110,138,.45)}
-
-    .name{
-      font-size:12.5px;
-      font-weight:800;
-      color:#6b3a52;
-      line-height:1.25;
-    }
-
-    .status{
-      font-size:11px;
-      font-weight:900;
-      padding:6px 9px;
-      border-radius:999px;
-      border:1px solid rgba(183,110,138,.18);
-      white-space:nowrap;
-    }
-    .pending .status{background:var(--pending)}
-    .doing .status{background:var(--doing)}
-    .done .status{background:var(--done)}
-
-    /* ✅ Tachado al aprobar */
-    .done .name{
-      text-decoration: line-through;
-      text-decoration-thickness: 2px;
-      text-decoration-color: rgba(183,110,138,.55);
-      opacity:.85;
-    }
-
-    .locked{opacity:.55;cursor:not-allowed}
-    @media (max-width: 560px){
-      .chip{width:100%;min-width:auto}
-    }
-  </style>
+.aprobada{
+  text-decoration: line-through;
+  text-decoration-thickness: 2px;
+  opacity:.6;
+}
+</style>
 </head>
 
 <body>
-  <div class="wrap">
-    <header>
-      <div class="left">
-        <h1 id="career">Malla</h1>
-        <p class="sub">Clic para cambiar estado · Aprobada = tachado</p>
-      </div>
+<div class="wrap">
 
-      <div class="controls">
-        <label>
-          Año:
-          <select id="yearFilter">
-            <option value="all">Todos</option>
-          </select>
-        </label>
-        <button id="reset">Reset</button>
-      </div>
-    </header>
+<h1 id="career">Mi camino académico</h1>
 
-    <div class="legend" id="legend"></div>
-    <div id="content"></div>
-  </div>
+<div id="content"></div>
+
+</div>
 
 <script>
-  const STATUS = ["pending","doing","done"];
-  const labels = { pending:"Pendiente", doing:"En curso", done:"Aprobada" };
-  const storeKey = "malla_compact_v1";
+const storeKey = "malla_minimal_v1";
+let data, aprobadas = JSON.parse(localStorage.getItem(storeKey) || "[]");
 
-  let data, statusMap = JSON.parse(localStorage.getItem(storeKey) || "{}");
+function save(){
+  localStorage.setItem(storeKey, JSON.stringify(aprobadas));
+}
 
-  function save(){ localStorage.setItem(storeKey, JSON.stringify(statusMap)); }
-  function nextStatus(current){
-    const i = STATUS.indexOf(current || "pending");
-    return STATUS[(i + 1) % STATUS.length];
-  }
+function getSemesterFromId(id){
+  const m = String(id).match(/A(\d)S([12])/);
+  return m ? `Año ${m[1]} · ${m[2]}° semestre` : "Otros";
+}
 
-  function getYearSemFromId(id){
-    const m = String(id).match(/A(\d)S([12])/);
-    return m ? { y:Number(m[1]), s:Number(m[2]) } : { y:null, s:null };
-  }
+function render(){
+  const content = document.getElementById("content");
+  content.innerHTML = "";
 
-  function buildYearFilter(subjects){
-    const years = [...new Set(subjects.map(s=>s.year).filter(Boolean))].sort((a,b)=>a-b);
-    const sel = document.getElementById("yearFilter");
-    years.forEach(y=>{
-      const o = document.createElement("option");
-      o.value = String(y);
-      o.textContent = `Año ${y}`;
-      sel.appendChild(o);
-    });
-    sel.addEventListener("change", render);
-  }
+  const groups = {};
 
-  function renderLegend(list){
-    let p=0,d=0,ok=0;
-    list.forEach(s=>{
-      const st = statusMap[s.id] || "pending";
-      if(st==="done") ok++;
-      else if(st==="doing") d++;
-      else p++;
-    });
-    document.getElementById("legend").innerHTML = `
-      <span class="tag"><span class="dot p"></span>Pendientes <b>${p}</b></span>
-      <span class="tag"><span class="dot d"></span>En curso <b>${d}</b></span>
-      <span class="tag"><span class="dot ok"></span>Aprobadas <b>${ok}</b></span>
-      <span class="tag">Total <b>${list.length}</b></span>
-    `;
-  }
-
-  function render(){
-    const yearFilter = document.getElementById("yearFilter").value;
-
-    let subjects = data.subjects.map(s=>{
-      const ys = getYearSemFromId(s.id);
-      return { ...s, year: s.year ?? ys.y, sem: ys.s };
-    });
-
-    subjects = subjects.filter(s => yearFilter==="all" ? true : String(s.year)===yearFilter);
-    subjects.sort((a,b)=> a.year-b.year || a.sem-b.sem || a.id.localeCompare(b.id));
-
-    renderLegend(subjects);
-
-    // agrupar por semestre
-    const groups = new Map();
-    subjects.forEach(s=>{
-      const key = `Año ${s.year} · ${s.sem}° semestre`;
-      if(!groups.has(key)) groups.set(key, []);
-      groups.get(key).push(s);
-    });
-
-    const content = document.getElementById("content");
-    content.innerHTML = "";
-
-    [...groups.entries()].forEach(([title, list])=>{
-      const box = document.createElement("div");
-      box.className = "semester";
-      box.innerHTML = `
-        <div class="semesterHead">
-          <p class="semesterTitle">${title}</p>
-          <p class="count">${list.length}</p>
-        </div>
-        <div class="chips"></div>
-      `;
-
-      const chips = box.querySelector(".chips");
-
-      list.forEach(subj=>{
-        const st = statusMap[subj.id] || "pending";
-
-        const chip = document.createElement("div");
-        chip.className = `chip ${st}`;
-        chip.innerHTML = `
-          <div class="name">${subj.name}</div>
-          <div class="status">${labels[st]}</div>
-        `;
-
-        chip.addEventListener("click", ()=>{
-          statusMap[subj.id] = nextStatus(st);
-          save();
-          render();
-        });
-
-        chips.appendChild(chip);
-      });
-
-      content.appendChild(box);
-    });
-  }
-
-  document.getElementById("reset").addEventListener("click", ()=>{
-    if(confirm("¿Resetear progreso?")){
-      statusMap = {};
-      save();
-      render();
-    }
+  data.subjects.forEach(s=>{
+    const key = getSemesterFromId(s.id);
+    if(!groups[key]) groups[key]=[];
+    groups[key].push(s);
   });
 
-  async function init(){
-    data = await fetch("./data.json").then(r=>r.json());
-    document.getElementById("career").textContent = data.career || "Malla";
-    buildYearFilter(data.subjects);
-    render();
-  }
-  init();
+  Object.keys(groups).forEach(sem=>{
+    const section = document.createElement("div");
+    section.className="semestre";
+
+    section.innerHTML=`<h2>${sem}</h2>`;
+
+    groups[sem].forEach(subj=>{
+      const div = document.createElement("div");
+      div.className="materia";
+      if(aprobadas.includes(subj.id)){
+        div.classList.add("aprobada");
+      }
+
+      div.textContent=subj.name;
+
+      div.addEventListener("click",()=>{
+        if(aprobadas.includes(subj.id)){
+          aprobadas = aprobadas.filter(id=>id!==subj.id);
+        } else {
+          aprobadas.push(subj.id);
+        }
+        save();
+        render();
+      });
+
+      section.appendChild(div);
+    });
+
+    content.appendChild(section);
+  });
+}
+
+async function init(){
+  data = await fetch("./data.json").then(r=>r.json());
+  document.getElementById("career").textContent = data.career || "Mi malla";
+  render();
+}
+
+init();
 </script>
+
 </body>
 </html>
