@@ -3,15 +3,13 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Malla por semestres</title>
+  <title>Malla</title>
 
   <style>
     :root{
-      /* Fondo rosa pastel */
       --bg1:#fde7f0;
       --bg2:#f9d6e5;
 
-      /* UI */
       --panel: rgba(255,255,255,.70);
       --panel2: rgba(255,255,255,.55);
       --border: rgba(139,74,100,.16);
@@ -19,15 +17,15 @@
 
       --title:#8b4a64;
       --text:#4a3a45;
-      --muted: rgba(74,58,69,.70);
 
-      /* Botones/ramitos */
       --pill:#ffffff;
       --pillBorder: rgba(139,74,100,.18);
 
-      /* Aprobada */
       --doneBg: rgba(233,251,242,.85);
       --doneBorder: rgba(120,185,150,.35);
+
+      --progressTrack: rgba(139,74,100,.12);
+      --progressFill: rgba(183,110,138,.65);
     }
 
     *{ box-sizing:border-box; }
@@ -51,7 +49,7 @@
       gap:12px;
       flex-wrap:wrap;
 
-      padding: 14px 16px;
+      padding: 12px 14px;
       border-radius: 18px;
       background: var(--panel);
       border: 1px solid var(--border);
@@ -59,41 +57,59 @@
       backdrop-filter: blur(10px);
     }
 
-    .brand{
+    /* Barra de progreso */
+    .progressWrap{
+      flex: 1 1 520px;
       display:flex;
-      flex-direction:column;
-      gap:4px;
-      min-width: 260px;
+      align-items:center;
+      gap:12px;
+      min-width: 240px;
     }
 
-    h1{
-      margin:0;
-      font-size: 16px;
-      font-weight: 750;
+    .progressTrack{
+      height: 12px;
+      width: 100%;
+      background: var(--progressTrack);
+      border-radius: 999px;
+      overflow:hidden;
+      border: 1px solid rgba(139,74,100,.10);
+    }
+
+    .progressFill{
+      height:100%;
+      width:0%;
+      background: var(--progressFill);
+      border-radius: 999px;
+      transition: width .25s ease;
+    }
+
+    .pct{
+      font-weight: 850;
       color: var(--title);
-      letter-spacing: .2px;
+      font-size: 12px;
+      min-width: 44px;
+      text-align:right;
     }
 
-    .sub{
-      margin:0;
-      font-size: 12.5px;
-      color: var(--muted);
-    }
-
-    button{
+    /* Botón reset sin texto */
+    .iconBtn{
+      width: 38px;
+      height: 38px;
+      border-radius: 999px;
       border: 1px solid rgba(139,74,100,.18);
       background: rgba(255,255,255,.75);
-      color: var(--title);
-      font-weight: 750;
-      font-size: 12px;
-      padding: 10px 14px;
-      border-radius: 999px;
       cursor:pointer;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size: 16px;
+      line-height: 1;
       transition: opacity .18s ease;
+      user-select:none;
     }
-    button:hover{ opacity:.85; }
+    .iconBtn:hover{ opacity:.85; }
 
-    /* ====== Tablero tipo foto (columnas por semestre) ====== */
+    /* ====== Tablero columnas ====== */
     .board{
       margin-top: 16px;
       display:flex;
@@ -104,7 +120,7 @@
 
     .col{
       flex: 0 0 auto;
-      width: 270px;              /* parecido a la foto */
+      width: 270px;
       border-radius: 18px;
       background: var(--panel2);
       border: 1px solid var(--border);
@@ -120,10 +136,6 @@
       background: rgba(255,255,255,.55);
       border: 1px solid rgba(139,74,100,.10);
       margin-bottom: 12px;
-    }
-
-    .colTitle{
-      margin:0;
       font-size: 13px;
       font-weight: 850;
       color: var(--title);
@@ -136,7 +148,6 @@
       gap: 10px;
     }
 
-    /* Ramitos/botones */
     .course{
       padding: 10px 12px;
       border-radius: 14px;
@@ -159,7 +170,6 @@
       opacity: .92;
     }
 
-    /* ✅ Aprobada: tachado como pediste */
     .course.done{
       background: var(--doneBg);
       border-color: var(--doneBorder);
@@ -169,7 +179,6 @@
       opacity: .70;
     }
 
-    /* Scroll más lindo */
     .board::-webkit-scrollbar{ height: 10px; }
     .board::-webkit-scrollbar-thumb{
       background: rgba(139,74,100,.22);
@@ -182,6 +191,7 @@
 
     @media (max-width: 520px){
       .col{ width: 240px; }
+      .pct{ min-width: 40px; }
     }
   </style>
 </head>
@@ -189,18 +199,21 @@
 <body>
   <div class="wrap">
     <header>
-      <div class="brand">
-        <h1 id="career">Malla</h1>
-        <p class="sub">Tocá una materia para marcarla como rendida (se tacha)</p>
+      <div class="progressWrap">
+        <div class="progressTrack" aria-label="Progreso">
+          <div class="progressFill" id="progressFill"></div>
+        </div>
+        <div class="pct" id="pct">0%</div>
       </div>
-      <button id="reset">Reset</button>
+
+      <div class="iconBtn" id="reset" title="Reset">🗑️</div>
     </header>
 
     <div class="board" id="board"></div>
   </div>
 
 <script>
-  const storeKey = "malla_board_semestres_v1";
+  const storeKey = "malla_board_semestres_v2";
   let data;
   let aprobadas = new Set(JSON.parse(localStorage.getItem(storeKey) || "[]"));
 
@@ -208,7 +221,6 @@
     localStorage.setItem(storeKey, JSON.stringify([...aprobadas]));
   }
 
-  // Convierte AÑO+SEMESTRE en "Semestre N" (como la foto)
   // A1S1 => 1, A1S2 => 2, A2S1 => 3, A2S2 => 4, etc.
   function semesterIndexFromId(id){
     const m = String(id).match(/A(\d)S([12])/);
@@ -218,20 +230,31 @@
     return (year - 1) * 2 + sem;
   }
 
+  function updateProgress(totalCourses){
+    const done = aprobadas.size;
+    const pct = totalCourses ? Math.round((done / totalCourses) * 100) : 0;
+    document.getElementById("pct").textContent = `${pct}%`;
+    document.getElementById("progressFill").style.width = `${pct}%`;
+  }
+
   function render(){
     const board = document.getElementById("board");
     board.innerHTML = "";
 
     // Agrupar por semestre N
-    const groups = new Map(); // key: N (number) -> subjects[]
+    const groups = new Map(); // key: N -> subjects[]
+    const allCourses = [];
+
     data.subjects.forEach(s=>{
       const idx = semesterIndexFromId(s.id);
-      if(idx === null) return; // ignora "hitos" si no siguen formato AXSY
+      if(idx === null) return; // ignora items sin formato AXSY
+      allCourses.push(s);
       if(!groups.has(idx)) groups.set(idx, []);
       groups.get(idx).push(s);
     });
 
-    // ordenar semestres
+    updateProgress(allCourses.length);
+
     const keys = [...groups.keys()].sort((a,b)=>a-b);
 
     keys.forEach(idx=>{
@@ -239,15 +262,12 @@
       col.className = "col";
 
       col.innerHTML = `
-        <div class="colHead">
-          <p class="colTitle">${idx}° Semestre</p>
-        </div>
+        <div class="colHead">${idx}° Semestre</div>
         <div class="stack"></div>
       `;
 
       const stack = col.querySelector(".stack");
 
-      // orden interno estable por id
       groups.get(idx)
         .slice()
         .sort((a,b)=> a.id.localeCompare(b.id))
@@ -282,7 +302,6 @@
 
   async function init(){
     data = await fetch("./data.json").then(r=>r.json());
-    document.getElementById("career").textContent = data.career || "Malla";
     render();
   }
 
