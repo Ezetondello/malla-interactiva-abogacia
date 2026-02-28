@@ -1,219 +1,280 @@
 <!doctype html>
 <html lang="es">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Malla</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Malla por semestres</title>
 
-<style>
-  :root{
-    --bgTop:#fde7f0;
-    --bgBottom:#f9d6e5;
+  <style>
+    :root{
+      /* Fondo rosa pastel */
+      --bg1:#fde7f0;
+      --bg2:#f9d6e5;
 
-    --panel: rgba(255,255,255,.70);
-    --panelBorder: rgba(139,74,100,.16);
+      /* UI */
+      --panel: rgba(255,255,255,.70);
+      --panel2: rgba(255,255,255,.55);
+      --border: rgba(139,74,100,.16);
+      --shadow: 0 18px 45px rgba(139,74,100,.12);
 
-    --title:#8b4a64;
-    --text:#4a3a45;
-    --muted: rgba(74,58,69,.70);
-  }
+      --title:#8b4a64;
+      --text:#4a3a45;
+      --muted: rgba(74,58,69,.70);
 
-  *{ box-sizing:border-box; }
+      /* Botones/ramitos */
+      --pill:#ffffff;
+      --pillBorder: rgba(139,74,100,.18);
 
-  body{
-    margin:0;
-    font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
-    background: linear-gradient(180deg, var(--bgTop) 0%, var(--bgBottom) 100%);
-    color: var(--text);
-  }
+      /* Aprobada */
+      --doneBg: rgba(233,251,242,.85);
+      --doneBorder: rgba(120,185,150,.35);
+    }
 
-  .wrap{
-    min-height:100vh;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    padding: 36px 18px;
-  }
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      background: linear-gradient(180deg, var(--bg1) 0%, var(--bg2) 100%);
+      color: var(--text);
+    }
 
-  /* “Capsule” (forma nueva, más linda que elipse) */
-  .panel{
-    width: min(760px, 100%);
-    background: var(--panel);
-    border: 1px solid var(--panelBorder);
-    border-radius: 44px;
-    padding: 34px 34px 28px;
-    box-shadow: 0 20px 55px rgba(139,74,100,.12);
-    backdrop-filter: blur(10px);
-  }
+    .wrap{
+      max-width: 1200px;
+      margin: 26px auto 60px;
+      padding: 0 18px;
+    }
 
-  header{
-    text-align:center;
-    padding: 8px 10px 22px;
-  }
+    header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
 
-  h1{
-    margin:0;
-    font-size:18px;
-    font-weight:650;
-    color: var(--title);
-    letter-spacing:.2px;
-  }
+      padding: 14px 16px;
+      border-radius: 18px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+    }
 
-  .sub{
-    margin: 8px 0 0;
-    font-size: 12.5px;
-    color: var(--muted);
-  }
+    .brand{
+      display:flex;
+      flex-direction:column;
+      gap:4px;
+      min-width: 260px;
+    }
 
-  .divider{
-    height:1px;
-    background: rgba(139,74,100,.12);
-    margin: 8px 0 18px;
-  }
+    h1{
+      margin:0;
+      font-size: 16px;
+      font-weight: 750;
+      color: var(--title);
+      letter-spacing: .2px;
+    }
 
-  .semestre{
-    margin: 18px 0 26px;
-  }
+    .sub{
+      margin:0;
+      font-size: 12.5px;
+      color: var(--muted);
+    }
 
-  .semestre h2{
-    margin: 0 0 12px;
-    font-size: 13px;
-    font-weight: 750;
-    color: var(--title);
-    letter-spacing:.4px;
-  }
+    button{
+      border: 1px solid rgba(139,74,100,.18);
+      background: rgba(255,255,255,.75);
+      color: var(--title);
+      font-weight: 750;
+      font-size: 12px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      cursor:pointer;
+      transition: opacity .18s ease;
+    }
+    button:hover{ opacity:.85; }
 
-  .materia{
-    padding: 8px 2px;
-    font-size: 14px;
-    cursor: pointer;
-    transition: opacity .18s ease, transform .18s ease;
-  }
+    /* ====== Tablero tipo foto (columnas por semestre) ====== */
+    .board{
+      margin-top: 16px;
+      display:flex;
+      gap: 16px;
+      overflow:auto;
+      padding: 6px 2px 14px;
+    }
 
-  .materia:hover{
-    opacity: .78;
-    transform: translateX(2px);
-  }
+    .col{
+      flex: 0 0 auto;
+      width: 270px;              /* parecido a la foto */
+      border-radius: 18px;
+      background: var(--panel2);
+      border: 1px solid var(--border);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 14px 34px rgba(139,74,100,.10);
+      padding: 12px;
+    }
 
-  .aprobada{
-    text-decoration: line-through;
-    text-decoration-thickness: 2px;
-    text-decoration-color: rgba(139,74,100,.55);
-    opacity: .62;
-  }
+    .colHead{
+      text-align:center;
+      padding: 8px 10px 10px;
+      border-radius: 14px;
+      background: rgba(255,255,255,.55);
+      border: 1px solid rgba(139,74,100,.10);
+      margin-bottom: 12px;
+    }
 
-  /* Botoncito minimal para reset */
-  .actions{
-    display:flex;
-    justify-content:center;
-    margin-top: 6px;
-  }
+    .colTitle{
+      margin:0;
+      font-size: 13px;
+      font-weight: 850;
+      color: var(--title);
+      letter-spacing:.3px;
+    }
 
-  button{
-    border: 1px solid rgba(139,74,100,.18);
-    background: rgba(255,255,255,.75);
-    color: var(--title);
-    font-weight: 700;
-    font-size: 12px;
-    padding: 10px 14px;
-    border-radius: 999px;
-    cursor:pointer;
-    transition: opacity .18s ease;
-  }
+    .stack{
+      display:flex;
+      flex-direction:column;
+      gap: 10px;
+    }
 
-  button:hover{ opacity: .85; }
+    /* Ramitos/botones */
+    .course{
+      padding: 10px 12px;
+      border-radius: 14px;
+      background: var(--pill);
+      border: 1px solid var(--pillBorder);
+      box-shadow: 0 10px 20px rgba(139,74,100,.10);
+      cursor:pointer;
+      transition: transform .15s ease, opacity .15s ease, border-color .15s ease;
+      line-height: 1.2;
+      font-size: 12.5px;
+      font-weight: 750;
+      color: #6b3a52;
+      text-align:center;
+      user-select:none;
+    }
 
-  @media (max-width:560px){
-    .panel{ padding: 26px 20px 22px; border-radius: 34px; }
-  }
-</style>
+    .course:hover{
+      transform: translateY(-1px);
+      border-color: rgba(139,74,100,.35);
+      opacity: .92;
+    }
+
+    /* ✅ Aprobada: tachado como pediste */
+    .course.done{
+      background: var(--doneBg);
+      border-color: var(--doneBorder);
+      text-decoration: line-through;
+      text-decoration-thickness: 2px;
+      text-decoration-color: rgba(139,74,100,.55);
+      opacity: .70;
+    }
+
+    /* Scroll más lindo */
+    .board::-webkit-scrollbar{ height: 10px; }
+    .board::-webkit-scrollbar-thumb{
+      background: rgba(139,74,100,.22);
+      border-radius: 999px;
+    }
+    .board::-webkit-scrollbar-track{
+      background: rgba(255,255,255,.35);
+      border-radius: 999px;
+    }
+
+    @media (max-width: 520px){
+      .col{ width: 240px; }
+    }
+  </style>
 </head>
 
 <body>
   <div class="wrap">
-    <div class="panel">
-      <header>
-        <h1 id="career">Mi malla</h1>
+    <header>
+      <div class="brand">
+        <h1 id="career">Malla</h1>
         <p class="sub">Tocá una materia para marcarla como rendida (se tacha)</p>
-      </header>
-
-      <div class="divider"></div>
-
-      <div id="content"></div>
-
-      <div class="actions">
-        <button id="reset">Reset</button>
       </div>
-    </div>
+      <button id="reset">Reset</button>
+    </header>
+
+    <div class="board" id="board"></div>
   </div>
 
 <script>
-  const storeKey = "malla_minimal_capsule_v1";
-  let data, aprobadas = JSON.parse(localStorage.getItem(storeKey) || "[]");
+  const storeKey = "malla_board_semestres_v1";
+  let data;
+  let aprobadas = new Set(JSON.parse(localStorage.getItem(storeKey) || "[]"));
 
   function save(){
-    localStorage.setItem(storeKey, JSON.stringify(aprobadas));
+    localStorage.setItem(storeKey, JSON.stringify([...aprobadas]));
   }
 
-  function getSemesterFromId(id){
+  // Convierte AÑO+SEMESTRE en "Semestre N" (como la foto)
+  // A1S1 => 1, A1S2 => 2, A2S1 => 3, A2S2 => 4, etc.
+  function semesterIndexFromId(id){
     const m = String(id).match(/A(\d)S([12])/);
-    return m ? `Año ${m[1]} · ${m[2]}° semestre` : "Otros";
+    if(!m) return null;
+    const year = Number(m[1]);
+    const sem  = Number(m[2]);
+    return (year - 1) * 2 + sem;
   }
 
   function render(){
-    const content = document.getElementById("content");
-    content.innerHTML = "";
+    const board = document.getElementById("board");
+    board.innerHTML = "";
 
-    const groups = {};
-
+    // Agrupar por semestre N
+    const groups = new Map(); // key: N (number) -> subjects[]
     data.subjects.forEach(s=>{
-      const key = getSemesterFromId(s.id);
-      if(!groups[key]) groups[key] = [];
-      groups[key].push(s);
+      const idx = semesterIndexFromId(s.id);
+      if(idx === null) return; // ignora "hitos" si no siguen formato AXSY
+      if(!groups.has(idx)) groups.set(idx, []);
+      groups.get(idx).push(s);
     });
 
-    // Orden básico: Año 1 S1, Año 1 S2, Año 2 S1...
-    const keys = Object.keys(groups).sort((a,b)=>{
-      const pa = a.match(/Año (\d) · ([12])°/);
-      const pb = b.match(/Año (\d) · ([12])°/);
-      const ay = pa ? Number(pa[1]) : 99;
-      const as = pa ? Number(pa[2]) : 99;
-      const by = pb ? Number(pb[1]) : 99;
-      const bs = pb ? Number(pb[2]) : 99;
-      return ay-by || as-bs || a.localeCompare(b);
-    });
+    // ordenar semestres
+    const keys = [...groups.keys()].sort((a,b)=>a-b);
 
-    keys.forEach(sem=>{
-      const section = document.createElement("div");
-      section.className = "semestre";
-      section.innerHTML = `<h2>${sem}</h2>`;
+    keys.forEach(idx=>{
+      const col = document.createElement("div");
+      col.className = "col";
 
-      groups[sem].forEach(subj=>{
-        const div = document.createElement("div");
-        div.className = "materia";
-        if(aprobadas.includes(subj.id)) div.classList.add("aprobada");
-        div.textContent = subj.name;
+      col.innerHTML = `
+        <div class="colHead">
+          <p class="colTitle">${idx}° Semestre</p>
+        </div>
+        <div class="stack"></div>
+      `;
 
-        div.addEventListener("click", ()=>{
-          if(aprobadas.includes(subj.id)){
-            aprobadas = aprobadas.filter(x => x !== subj.id);
-          } else {
-            aprobadas.push(subj.id);
-          }
-          save();
-          render();
+      const stack = col.querySelector(".stack");
+
+      // orden interno estable por id
+      groups.get(idx)
+        .slice()
+        .sort((a,b)=> a.id.localeCompare(b.id))
+        .forEach(subj=>{
+          const btn = document.createElement("div");
+          btn.className = "course";
+          btn.textContent = subj.name;
+
+          if(aprobadas.has(subj.id)) btn.classList.add("done");
+
+          btn.addEventListener("click", ()=>{
+            if(aprobadas.has(subj.id)) aprobadas.delete(subj.id);
+            else aprobadas.add(subj.id);
+            save();
+            render();
+          });
+
+          stack.appendChild(btn);
         });
 
-        section.appendChild(div);
-      });
-
-      content.appendChild(section);
+      board.appendChild(col);
     });
   }
 
   document.getElementById("reset").addEventListener("click", ()=>{
     if(confirm("¿Resetear materias rendidas?")){
-      aprobadas = [];
+      aprobadas = new Set();
       save();
       render();
     }
@@ -221,7 +282,7 @@
 
   async function init(){
     data = await fetch("./data.json").then(r=>r.json());
-    document.getElementById("career").textContent = data.career || "Mi malla";
+    document.getElementById("career").textContent = data.career || "Malla";
     render();
   }
 
