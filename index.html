@@ -23,9 +23,33 @@ body{
 }
 
 .wrap{
-  max-width:700px;
-  margin:50px auto;
+  max-width:900px;
+  margin:60px auto;
   padding:0 20px;
+}
+
+/* ELIPSE */
+.oval{
+  position: relative;
+  padding: 60px 60px;
+  margin: 0 auto;
+  max-width: 760px;
+}
+
+.oval::before{
+  content:"";
+  position:absolute;
+  inset: 0;
+  background: rgba(255,255,255,.55);
+  border: 1px solid rgba(139,74,100,.18);
+  border-radius: 50% / 28%;
+  box-shadow: 0 22px 60px rgba(139,74,100,.15);
+  z-index: 0;
+}
+
+.oval > *{
+  position: relative;
+  z-index: 1;
 }
 
 h1{
@@ -64,20 +88,30 @@ h1{
   text-decoration-thickness: 2px;
   opacity:.6;
 }
+
+@media (max-width: 700px){
+  .oval{
+    padding: 40px 30px;
+  }
+  .oval::before{
+    border-radius: 50% / 24%;
+  }
+}
 </style>
 </head>
 
 <body>
 <div class="wrap">
 
-<h1 id="career">Mi camino académico</h1>
-
-<div id="content"></div>
+<div class="oval">
+  <h1 id="career">Mi camino académico</h1>
+  <div id="content"></div>
+</div>
 
 </div>
 
 <script>
-const storeKey = "malla_minimal_v1";
+const storeKey = "malla_minimal_v2";
 let data, aprobadas = JSON.parse(localStorage.getItem(storeKey) || "[]");
 
 function save(){
